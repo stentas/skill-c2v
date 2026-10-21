@@ -1,0 +1,15 @@
+# ffmpeg-static fetches the ffmpeg binary in its install script; pnpm refuses to run it unless listed here.
+# kokoro-js deps need no install script for CPU TTS (onnxruntime-node bundles its CPU binaries and only fetches
+# Linux CUDA libs; sharp uses its prebuilt @img package; protobufjs only checks its CLI) – denied explicitly so
+# pnpm 11 does not fail the install with ERR_PNPM_IGNORED_BUILDS.
+allowBuilds:          # pnpm 11
+  ffmpeg-static: true
+  onnxruntime-node: false
+  protobufjs: false
+  sharp: false
+onlyBuiltDependencies: # pnpm 10
+  - ffmpeg-static
+ignoredBuiltDependencies: # pnpm 10
+  - onnxruntime-node
+  - protobufjs
+  - sharp

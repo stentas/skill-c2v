@@ -1,0 +1,10 @@
+# Skill repository. toolkit/.gitignore covers the toolkit itself and travels with copies of it.
+
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Scratch renders made while developing the skill from the repo root
+clips/
+stills/
+*.mp4

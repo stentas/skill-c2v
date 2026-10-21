@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>01 – example</title>
+<!-- Runs straight from toolkit/examples/. shared/voice.js (generated) carries VIDEO, incl. the theme from
+     video.config.json. A project scene also links ../shared/product.css; the inline <style> below would live there. -->
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+  #page { font: 15px/1.5 "Inter", sans-serif; color: #1f2328; background: #f5f6f8; }
+  .bar { height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 32px; background: #fff; border-bottom: 1px solid #d9dde3; font-weight: 600; font-size: 17px; }
+  .logo { width: 28px; height: 28px; border-radius: 6px; background: #3355cc; }
+  main { padding: 40px 64px; }
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  h1 { margin: 0; font-size: 26px; font-weight: 600; }
+  .btn { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 6px; border: 1px solid #3355cc; background: #3355cc; color: #fff; }
+  .btn.hov { background: #2a47ad; }
+  .btn.ghost { background: #fff; color: #1f2328; border-color: #d9dde3; }
+  .btn.ghost.hov { background: #f5f6f8; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #d9dde3; border-radius: 6px; }
+  th, td { text-align: left; padding: 14px 20px; border-bottom: 1px solid #e6e8ec; }
+  th { font-size: 13px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .pill { padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 500; background: #e7f5ec; color: #2f855a; }
+  .pill.draft { background: #fdf3e1; color: #b7791f; }
+  /* Modal: in #camera, left: 50% + fixed top, no class .centered → modalAt base = translate(-50%, 0px). */
+  .backdrop { position: absolute; inset: 0; background: #000; display: none; }
+  .modal { position: absolute; left: 50%; top: 170px; width: 560px; display: none; background: #fff; border-radius: 8px;
+           box-shadow: 0 10px 30px rgba(0, 0, 0, .18); font: 15px/1.5 "Inter", sans-serif; color: #1f2328; }
+  .modal header { padding: 20px 24px; font-size: 18px; font-weight: 600; border-bottom: 1px solid #e6e8ec; }
+  .modal .body { padding: 24px; }
+  .modal label { display: block; font-weight: 500; margin-bottom: 6px; }
+  .input { height: 42px; padding: 9px 12px; border: 1px solid #d9dde3; border-radius: 6px; white-space: pre; }
+  .input.focus { border-color: #3355cc; box-shadow: 0 0 0 3px rgba(51, 85, 204, .2); }
+  .placeholder { color: #9aa1ab; }
+  .modal footer { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #e6e8ec; }
+  .title-card { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #1f2328;
+                color: #fff; font-family: "Inter", sans-serif; }
+  .title-card h2 { margin: 0; font-size: 72px; font-weight: 700; letter-spacing: -.02em; }
+  .title-card p { margin: 12px 0 0; font-size: 28px; color: #c5cad3; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="camera">
+  <div id="page">
+    <div class="bar"><span class="logo"></span>Example app</div>
+    <main>
+      <div class="head"><h1>Projects</h1><button class="btn" id="new-project">New project</button></div>
+      <table>
+        <tr><th>Name</th><th>Owner</th><th>Status</th><th>Updated</th></tr>
+        <tr><td>Office move</td><td>Ada Berg</td><td><span class="pill">Active</span></td><td>3 Oct</td></tr>
+        <tr><td>Website refresh</td><td>Jon Lie</td><td><span class="pill draft">Draft</span></td><td>28 Sep</td></tr>
+        <tr><td>Budget review</td><td>Kari Dahl</td><td><span class="pill">Active</span></td><td>21 Sep</td></tr>
+      </table>
+    </main>
+  </div>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="modal" id="dialog">
+    <header>New project</header>
+    <div class="body"><label>Project name</label><div class="input" id="name"></div></div>
+    <footer><button class="btn ghost">Cancel</button><button class="btn">Create</button></footer>
+  </div>
+</div></div>
+<script src="./shared/voice.js"></script>
+<script src="../engine.js"></script>
+<script>
+  // Title card on the stage (not zoomed by the camera).
+  const title = mount('<div class="stage-layer title-card"><h2>Projects</h2><p>Creating a new project</p></div>', "stage");
+
+  // In a real project every time below comes from the voice:
+  //   const S = sceneInfo(1);                     // duration, lead, audioSrc, cue … from shared/voice.js
+  //   const T = { click: S.cue("new project"), type: S.cue("give it a name") };
+  //   createDemo({ duration: S.duration, lead: S.lead, audioSrc: S.audioSrc, audioDuration: S.audioDuration, cue: S.cue, … })
+  const T = { titleOut: .8, colStart: 1.4, moveStart: 2.0, click: 3.0, open: 3.15, field: 4.3, type: 4.7, typed: 5.9 };
+
+  createDemo({
+    duration: 7,                                 // S.duration
+    lead: 0,                                     // S.lead (no voice here)
+    cursorOpacity: (t) => prog(t, T.titleOut, T.titleOut + .5),   // cursor appears with the page, not over the title card
+    camera: [
+      { t: 0, ...CAM_BASE },
+      { t: T.moveStart, ...CAM_BASE },           // hold, then zoom on the button
+      // dx/dy (page px) keep the zoomed view inside the page: visible width = 1920 / s page px.
+      { t: T.click - .1, s: 1.5, sel: "#new-project", dx: -530, dy: 250 },
+      { t: T.field - .1, s: 1.5, sel: "#dialog", dy: 70, at: T.field },   // measured while the dialog is open
+    ],
+    moves: [
+      { t0: T.moveStart, t1: T.click - .3, to: { sel: "#new-project" } },
+      { t0: T.click + .5, t1: T.field, to: { sel: "#name", ax: .8 } },   // right part: keeps the typed text free
+    ],
+    clicks: [{ t: T.click }, { t: T.field + .2 }],
+    highlights: [{ t0: T.colStart, t1: T.moveStart + .6, col: 3 }],   // the Status column
+    states: [
+      (t) => fadeOut(title, T.titleOut, .5, t),
+      fadeModal("#dialog", "#backdrop", T.open, null, { backdrop: .35 }),
+      (t) => typeText("#name", "Harbour renovation", T.type, T.typed, t, { focusFrom: T.field + .2, placeholder: "e.g. Office move" }),
+    ],
+  });
+</script>
+</body>
+</html>

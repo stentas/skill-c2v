@@ -1,0 +1,34 @@
+{
+  "name": "skill-c2v",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs",
+    "render:all": "node render.mjs --all",
+    "stills": "node render.mjs --stills 0,end",
+    "contact": "node render.mjs --contact",
+    "check": "node render.mjs --check-boundaries",
+    "assemble": "node assemble.mjs",
+    "voice-meta": "node tools/voice-meta.mjs",
+    "tts": "node tools/tts.mjs",
+    "align": "node tools/align.mjs",
+    "captions": "node tools/captions.mjs",
+    "ffmpeg": "node tools/ffbin.mjs",
+    "doctor": "node tools/doctor.mjs",
+    "links": "node tools/validate-links.mjs ..",
+    "example": "node examples/run.mjs",
+    "test": "node --test \"tools/*.test.mjs\""
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "3.8.1",
+    "@remotion/captions": "4.0.537",
+    "ffmpeg-static": "5.3.0",
+    "kokoro-js": "1.2.1"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.0"
+  }
+}

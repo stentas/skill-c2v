@@ -1,0 +1,90 @@
+/* base.css – stage, camera and overlay styles for engine.js. Product-neutral: no product colours or fonts
+ * (those go in the project's shared/product.css, see product.template.css).
+ *
+ * Link order in a scene: ../fonts/fonts.css, ../base.css, ../shared/product.css (product wins).
+ * Overridable tokens (set them in product.css :root):
+ *   --stage-bg, --page-bg   background behind / of the app page
+ *   --highlight             highlight frame colour      --highlight-glow   its soft outer ring
+ *   --ripple                click ripple colour         --caret            typing caret colour
+ * Size tokens, set by engine.js as inline custom properties on #stage from the theme (video.config.json →
+ * "theme"; do not set them in product.css – the inline values win). Defaults = theme "frame":
+ *   --hl-width, --hl-radius, --hl-glow   highlight border, corner radius, ring width (frame) / blur (glow)
+ *   --hl-dim                             spotlight: opacity of the darkening around the highlight
+ *   --ripple-size, --cursor-size         click ripple diameter, cursor box
+ * Highlight styles: .hl.frame | .hl.underline | .hl.spotlight | .hl.glow (style "none" draws nothing).
+ * Captions (captionTrack): deliberately neutral – choose the look per video in product.css :root:
+ *   --caption-font (unset = the #stage font), --caption-size, --caption-weight, --caption-color, --caption-bg,
+ *   --caption-radius, --caption-pad, --caption-max (max width), karaoke: --caption-now (current word colour),
+ *   --caption-said (spoken words colour), --caption-ahead (opacity of words not yet spoken).
+ */
+
+:root {
+  --stage-bg: #fff;
+  --page-bg: #fff;
+  --highlight: #f8992e;
+  --highlight-glow: rgba(248, 153, 46, .18);
+  --ripple: rgba(0, 0, 0, .28);
+  --caret: #222;
+  --hl-width: 2px;
+  --hl-radius: 8px;
+  --hl-glow: 4px;
+  --hl-dim: .45;
+  --ripple-size: 44px;
+  --cursor-size: 28px;
+  --caption-size: 34px;
+  --caption-weight: 600;
+  --caption-color: #fff;
+  --caption-bg: rgba(0, 0, 0, .55);
+  --caption-radius: 8px;
+  --caption-pad: 10px 18px;
+  --caption-max: 70%;
+  --caption-now: #ffd84d;
+  --caption-said: var(--caption-color);
+  --caption-ahead: .6;
+}
+
+/* Everything moves through DEMO.seek(t); CSS transitions/animations would make frames non-deterministic. */
+*, *::before, *::after { box-sizing: border-box; transition: none !important; animation: none !important; }
+
+html, body { margin: 0; background: #111; }
+body { overflow: hidden; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+/* ---------- Stage / camera ---------- */
+/* #stage = output frame (1920 × 1080). #camera = the zoomed world (page size, transformed by the camera).
+   #page  = the unzoomed app; page states (.page-content) are stacked inside it and cross-faded. */
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--stage-bg); transform-origin: 0 0; }
+#camera { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#page { position: absolute; inset: 0; background: var(--page-bg); }
+.page-content { position: absolute; inset: 0; }
+/* Full-stage layer (mount(html, "stage")): titles, end cards, graphics. Not zoomed by the camera. */
+.stage-layer { position: absolute; inset: 0; pointer-events: none; }
+
+/* ---------- Typing caret (typeText) ---------- */
+.caret { display: inline-block; width: 1px; height: 1.15em; margin: 0 0 0 1px; background: var(--caret); vertical-align: -0.2em; }
+.caret.off { visibility: hidden; }
+
+/* ---------- Overlays (above the app, driven by the engine) ---------- */
+#highlights { position: absolute; inset: 0; pointer-events: none; }
+.hl { position: absolute; opacity: 0; }
+.hl.frame { border: var(--hl-width) solid var(--highlight); border-radius: var(--hl-radius); box-shadow: 0 0 0 var(--hl-glow) var(--highlight-glow); }
+.hl.underline { border-bottom: var(--hl-width) solid var(--highlight); border-radius: 0; }
+/* The stage clips (overflow: hidden), so the huge shadow darkens everything outside the rect. */
+.hl.spotlight { border-radius: var(--hl-radius); box-shadow: 0 0 0 9999px rgba(0, 0, 0, var(--hl-dim)); }
+.hl.glow { border-radius: var(--hl-radius); box-shadow: 0 0 var(--hl-glow) calc(var(--hl-glow) / 3) var(--highlight); }
+#ripple { position: absolute; left: 0; top: 0; width: var(--ripple-size); height: var(--ripple-size);
+          margin: calc(var(--ripple-size) / -2) 0 0 calc(var(--ripple-size) / -2); border-radius: 50%; background: var(--ripple); opacity: 0; pointer-events: none; }
+#cursor { position: absolute; left: 0; top: 0; width: var(--cursor-size); height: var(--cursor-size); transform-origin: 2px 2px; pointer-events: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
+
+/* ---------- Captions (captionTrack; on the stage before #ripple: above the page, below ripple and cursor) ---------- */
+/* engine.js sets display, opacity and top/bottom (margin) inline; .pos-top / .pos-bottom mark the position. */
+#captions { position: absolute; left: 0; right: 0; bottom: 72px; width: fit-content; max-width: var(--caption-max); margin: 0 auto;
+            padding: var(--caption-pad); border-radius: var(--caption-radius); background: var(--caption-bg); color: var(--caption-color);
+            font-family: var(--caption-font); font-size: var(--caption-size); font-weight: var(--caption-weight); line-height: 1.3;
+            text-align: center; pointer-events: none; }
+#captions.pos-top { top: 72px; bottom: auto; }
+#captions.karaoke span { opacity: var(--caption-ahead); }
+#captions.karaoke span.said { opacity: 1; color: var(--caption-said); }
+#captions.karaoke span.now { opacity: 1; color: var(--caption-now); }
+
+/* ---------- Live preview only ---------- */
+#hud { position: fixed; right: 8px; bottom: 8px; font: 12px/1 monospace; color: #9aa; pointer-events: none; }

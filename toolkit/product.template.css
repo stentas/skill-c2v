@@ -1,0 +1,102 @@
+/* product.css – look-and-feel CSS of one video project. Copy to shared/product.css and fill in.
+ *
+ * Linked after ../fonts/fonts.css and ../base.css, so rules here win.
+ * Values come from the product's design library (its theme tokens / CSS variables, resolved in the
+ * order the product loads its stylesheets) or, when there is none, from the look-and-feel input
+ * described in references/look-and-feel.md. Do not guess: every value should have a source.
+ *
+ * Deterministic: no transition, animation or @keyframes here (base.css disables them anyway).
+ * Interaction states are classes set by the engine: .hov (cursor over it), .focus (typeText field),
+ * plus whatever classes your states functions toggle (.active, .open, .selected …).
+ */
+
+:root {
+  /* ---- base.css tokens (override as needed) ---- */
+  /* Overlay shape and motion (highlight style, cursor, ripple, modal motion) come from "theme" in video.config.json; colours from here. */
+  --stage-bg: #fff;                 /* behind the page (visible when zoomed out / letterboxed) */
+  --page-bg: #fff;                  /* the app page */
+  --highlight: #f8992e;             /* highlight frame – often the brand accent */
+  --highlight-glow: rgba(248, 153, 46, .18);
+  --ripple: rgba(0, 0, 0, .28);     /* click ripple */
+  --caret: currentColor;            /* typing caret – usually the input text colour */
+
+  /* ---- captions (captionTrack) – base.css defaults are neutral; choose them for this video ---- */
+  /* --caption-font: var(--font-body);   unset = the #stage font (captions sit outside #page)
+     --caption-size: 34px;
+     --caption-weight: 600;
+     --caption-color: #fff;
+     --caption-bg: rgba(0, 0, 0, .55);
+     --caption-radius: 8px;
+     --caption-pad: 10px 18px;
+     --caption-max: 70%;                 max width of the box
+     --caption-now: #ffd84d;             karaoke: current word
+     --caption-said: #fff;               karaoke: spoken words
+     --caption-ahead: .6;                karaoke: opacity of words not yet spoken */
+
+  /* ---- product palette (semantic names; placeholder values) ---- */
+  --color-primary: #3355cc;
+  --color-primary-hover: #2a47ad;
+  --color-on-primary: #fff;
+  --color-text: #1f2328;
+  --color-text-muted: #6b7280;
+  --color-border: #d9dde3;
+  --color-surface: #fff;
+  --color-surface-alt: #f5f6f8;
+  --color-success: #2f855a;
+  --color-warning: #b7791f;
+  --color-danger: #c53030;
+
+  /* ---- typography ---- */
+  --font-body: "Inter", system-ui, sans-serif;   /* family must be local (fonts/) */
+  --font-size-base: 14px;
+  --font-weight-normal: 400;
+  --font-weight-bold: 600;
+  --line-height-base: 1.5;
+
+  /* ---- shape ---- */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --shadow-dialog: 0 10px 30px rgba(0, 0, 0, .18);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+}
+
+/* ---------- Fonts ----------
+ * Product fonts go in ../fonts/ next to Inter. One @font-face per file (static fonts: one per weight/style):
+ *
+ * @font-face {
+ *   font-family: "Product Sans";
+ *   font-style: normal;
+ *   font-weight: 400;
+ *   font-display: block;
+ *   src: url("../fonts/product-sans-400.woff2") format("woff2");
+ * }
+ *
+ * Then list the family in video.config.json → "fonts" so render.mjs fails loudly if it does not load.
+ */
+
+/* ---------- Typography ---------- */
+#page { font-family: var(--font-body); font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--color-text); }
+/* headings, muted text, links */
+
+/* ---------- Buttons ---------- */
+/* .btn, variants (primary, secondary, danger), sizes, .btn.hov, .btn:disabled / .btn.disabled */
+
+/* ---------- Inputs ---------- */
+/* text fields (typeText targets are divs styled as inputs), .focus ring, .placeholder, selects, labels */
+
+/* ---------- Tables ---------- */
+/* header cells, body cells, row borders, zebra/hover rows, cell padding */
+
+/* ---------- Pills / badges ---------- */
+/* status colours from the semantic palette */
+
+/* ---------- Modals ----------
+ * Dialogs live in #camera (mount(html, "camera")), absolutely positioned with left: 50% and a fixed top
+ * (or class .centered with top: 50%). modalAt() sets display/opacity/transform – do not set transform here.
+ */
+/* .modal, .modal-backdrop, header, body, footer, close button */
+
+/* ---------- Menus ---------- */
+/* dropdowns, select lists (placeBelow()), menu items, .hov item, separators */

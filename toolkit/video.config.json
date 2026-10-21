@@ -1,0 +1,31 @@
+{
+  "_doc": "Template – see README.md › Config. Paths are relative to this file. Keys starting with _ are ignored.",
+  "name": "product-demo",
+  "output": "product-demo.mp4",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "lead": 0.5,
+  "tail": 0.8,
+  "page": { "w": 1670, "h": 940 },
+  "camBase": { "s": 1.15, "cx": 835, "cy": 470 },
+  "cursorRest": { "x": 1660, "y": 980 },
+  "_theme": "Overlay shape and motion (README.md › Themes): a preset – frame, calm, spotlight, energetic, minimal – or an object { \"preset\": \"calm\", \"highlight\": { \"pad\": 6 }, … } with sections highlight, cursor, ripple, camera, modal, typing. Choose it per video; run pnpm voice-meta after changing it.",
+  "theme": "frame",
+  "_hover":"Optional CSS selector of hoverable elements (default: .hoverable, [data-hover], button, [role=button], .btn, .tab, .opt, .btn-close)",
+  "fonts": ["Inter"],
+  "dirs": { "scenes": "scenes", "clips": "clips", "stills": "stills", "audio": "audio" },
+  "voiceOut": "shared/voice.js",
+  "voiceText": "audio/voice-script.txt",
+  "_audioPattern": "\"auto\" = file whose name starts with the scene id (1_Chapter_1.mp3, 01-intro.mp3). Or a pattern: {n} id, {nn} 2-digit id, {slug}, {i}/{ii} position among voiced scenes – e.g. \"{n}_Chapter_1.mp3\".",
+  "audioPattern": "auto",
+  "browser": { "channel": "msedge" },
+  "encode": { "crf": 14, "preset": "slow", "capture": "jpeg", "quality": 95 },
+  "assemble": { "crf": 16, "preset": "slow", "lufs": -16, "truePeak": -1.5, "lra": 11, "audioBitrate": "192k" },
+  "scenes": [
+    { "id": 1, "slug": "intro" },
+    { "id": 2, "slug": "overview" },
+    { "id": 3, "slug": "edit", "audio": "03-edit-v2.mp3" },
+    { "id": 4, "slug": "end", "silent": true, "duration": 3 }
+  ]
+}

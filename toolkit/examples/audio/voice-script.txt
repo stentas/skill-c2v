@@ -1,0 +1,1 @@
+This is the voiced example. First we open the panel. Then we highlight the total. Finally the modal closes.

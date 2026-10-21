@@ -1,0 +1,11 @@
+Product Video is a skill for Claude Code. It turns a sentence like "we need a video that shows this feature" into a finished, narrated video file.
+
+It starts with the truth. Before anything is drawn, the skill reads the product's source code and checks every claim the video will make. If a feature does not exist, it is not shown, and the team gets a list of what must be fixed first.
+
+Then comes the storyboard and the voice script. Each scene has a purpose, a few lines of narration, and a note on what the viewer should see. You approve the storyboard before a single frame is rendered.
+
+The voice comes first, and the pictures follow. Narration is generated one file per scene, either offline with Kokoro or online with ElevenLabs. The toolkit measures every pause in the recording, so cursor moves, clicks and highlights land exactly where the words do.
+
+Rendering is deterministic. Every frame is a pure function of time, drawn in a headless browser and encoded with ffmpeg in full HD at thirty frames per second. The same scene renders the same way on every machine, today and next year.
+
+Finally, the clips are joined, the loudness is normalised, and you get one video file, ready to publish. Change one sentence in one scene, and only that scene is rendered again.
