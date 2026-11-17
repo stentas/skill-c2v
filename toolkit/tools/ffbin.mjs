@@ -38,8 +38,15 @@ export function probe(file) {
   return { duration, hasVideo: /Stream #\d+:\d+.*: Video:/.test(raw), hasAudio: /Stream #\d+:\d+.*: Audio:/.test(raw), raw };
 }
 
-/** Number of video frames (packets) in a clip, counted by stream copy without decoding; null if none. */
+/**
+ * Number of video frames (packets) in a clip, counted by stream copy without decoding; null if none.
+ * Counts the per-packet lines of the framecrc muxer: some ffmpeg builds (e.g. 6.1 from ffmpeg-static)
+ * omit "frame=" from the progress line on stream copy, so the progress line is only a fallback.
+ */
 export function videoFrames(file) {
+  const r = run(["-hide_banner", "-v", "error", "-i", file, "-map", "0:v", "-c", "copy", "-f", "framecrc", "-"]);
+  const packets = (r.stdout ?? "").split(/\r?\n/).filter((line) => /^\d+,/.test(line)).length;
+  if (packets > 0) return packets;
   const log = run(["-hide_banner", "-i", file, "-map", "0:v", "-c", "copy", "-f", "null", "-"]).stderr ?? "";
   const all = [...log.matchAll(/frame=\s*(\d+)/g)];
   return all.length ? Number(all[all.length - 1][1]) : null;
